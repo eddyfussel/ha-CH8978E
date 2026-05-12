@@ -1,0 +1,20 @@
+{
+  "name": "ha-CH8978E Dev",
+  "image": "ghcr.io/home-assistant/devcontainer:latest",
+  "postCreateCommand": "pip install -e '.[local,dev]'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
+      }
+    }
+  }
+}

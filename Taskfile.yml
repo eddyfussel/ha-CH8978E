@@ -1,0 +1,69 @@
+version: '3'
+
+tasks:
+
+  # ---------------------------------------------------------------------------
+  # One-time + daily setup
+  # ---------------------------------------------------------------------------
+
+  setup:
+    desc: "Install dependencies and symlink component into config/ (required once)"
+    cmds:
+      # --no-install-project keeps this repo off sys.path as a package,
+      # which prevents the editable-install path-hook from polluting
+      # custom_components.__path__ and breaking HA's integration loader.
+      - uv sync --dev --no-install-project --python 3.14
+      - |
+        # Remove any legacy config/custom_components symlink before creating the dir
+        TARGET_DIR="$(pwd)/config/custom_components"
+        if [ -L "$TARGET_DIR" ]; then
+          rm "$TARGET_DIR"
+        fi
+        mkdir -p "$TARGET_DIR"
+      - |
+        TARGET="$(pwd)/config/custom_components/pyur_modem"
+        SOURCE="$(pwd)/custom_components/pyur_modem"
+        # Force-recreate the symlink (handles stale dirs/symlinks from previous runs)
+        rm -rf "$TARGET"
+        ln -s "$SOURCE" "$TARGET"
+        echo "Symlink: $TARGET -> $SOURCE"
+    status:
+      - test -f .venv/bin/hass
+      - test -L config/custom_components/pyur_modem
+
+  run:
+    desc: "Start Home Assistant at http://localhost:8123"
+    deps: [setup]
+    env:
+      # macOS Xcode CLT ships C++ standard headers inside the SDK, not in the
+      # global include path. Without this, any package that builds a C extension
+      # at runtime (e.g. pymicro-vad, pyspeex-noise) fails with "cstdint not found".
+      CPATH: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1
+    cmds:
+      - .venv/bin/hass -c config
+
+  # ---------------------------------------------------------------------------
+  # Tests and linting
+  # ---------------------------------------------------------------------------
+
+  test:
+    desc: "Run unit tests"
+    deps: [setup]
+    cmds:
+      - .venv/bin/pytest tests/ -v
+
+  lint:
+    desc: "Lint with ruff"
+    deps: [setup]
+    cmds:
+      - .venv/bin/ruff check custom_components/ tests/
+
+  # ---------------------------------------------------------------------------
+  # Housekeeping
+  # ---------------------------------------------------------------------------
+
+  clean:
+    desc: "Reset HA state (storage, DB, log) — keeps deps cache and component symlink"
+    cmds:
+      - rm -rf config/.storage config/home-assistant_v2.db config/home-assistant.log
+        config/.HA_VERSION config/tts

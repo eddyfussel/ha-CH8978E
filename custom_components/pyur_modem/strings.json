@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Pyur Cable Modem",
+        "description": "Enter the connection details for your CH8978E modem.",
+        "data": {
+          "host": "Host (IP or URL)",
+          "username": "Username",
+          "password": "Password"
+        },
+        "data_description": {
+          "host": "IP address or URL of your modem. https:// is added automatically if omitted. e.g. 192.168.100.1",
+          "username": "Modem web interface username (default: admin)",
+          "password": "Modem web interface password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate Pyur Cable Modem",
+        "description": "Enter new credentials for {host}.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the modem. Check the host and your network.",
+      "invalid_auth": "Invalid username or password.",
+      "unknown": "An unexpected error occurred. Check the Home Assistant logs."
+    },
+    "abort": {
+      "already_configured": "This modem is already configured.",
+      "reauth_successful": "Re-authentication was successful."
+    }
+  }
+}

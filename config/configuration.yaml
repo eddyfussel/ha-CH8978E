@@ -1,0 +1,11 @@
+homeassistant:
+  name: "Pyur Modem Dev"
+
+http:
+
+frontend:
+
+logger:
+  default: warning
+  logs:
+    custom_components.pyur_modem: debug

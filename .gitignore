@@ -1,0 +1,33 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.eggs/
+*.egg-info/
+
+# Home Assistant local dev runtime data
+config/.storage/
+config/home-assistant_v2.db
+config/home-assistant_v2.db-shm
+config/home-assistant_v2.db-wal
+config/home-assistant.log
+config/home-assistant.log.*
+config/.HA_VERSION
+config/deps/
+config/tts/
+config/blueprints/
+config/custom_components/
+config/.ha_run.lock
+config/.cache/*
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ruff
+.ruff_cache/
+
+# macOS
+.DS_Store
