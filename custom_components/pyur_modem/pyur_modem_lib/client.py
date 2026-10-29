@@ -151,6 +151,11 @@ class PyurModemClient:
 
     def login(self) -> None:
         """Establish a session with the modem.  Raises :class:`AuthError` on failure."""
+        # Start from a clean cookie jar so a half-finished earlier login
+        # (stale PHPSESSID / CSRF_Token) cannot poison this attempt.
+        self._logged_in = False
+        self._session.cookies.clear()
+
         # Step 1: GET root to receive session cookies (PHPSESSID + CSRF_Token)
         self._session.get(
             self._url("/"),
